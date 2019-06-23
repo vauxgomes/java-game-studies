@@ -4,7 +4,10 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.Random;
 
+import com.game.core.BasicEnemy;
+import com.game.core.HUD;
 import com.game.core.ID;
 import com.game.core.Player;
 import com.game.mechanics.KeyInput;
@@ -18,8 +21,9 @@ public class Game extends Canvas implements Runnable {
 
 	private Thread thread;
 	private boolean running = false;
-	
+
 	private Handler handler;
+	private HUD hud;
 
 	static {
 		WIDTH = 640;
@@ -27,9 +31,16 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public Game() {
-		handler = new Handler();		
-		handler.addObject(new Player(100,  100,  ID.Player_1));
+		handler = new Handler();
+		handler.addObject(new Player(WIDTH / 2 - 32, HEIGHT / 2 - 32, ID.Player_1));
+
+		hud = new HUD();
 		
+		Random rnd = new Random();
+		for (int i = 0; i < 10; i++) {
+			handler.addObject(new BasicEnemy(rnd.nextInt(WIDTH) + 1, rnd.nextInt(HEIGHT) + 1, ID.BasicEnemy));
+		}
+
 		this.addKeyListener(new KeyInput(handler));
 		new Window(WIDTH, HEIGHT, "First game", this);
 	}
@@ -51,12 +62,14 @@ public class Game extends Canvas implements Runnable {
 
 	@Override
 	public void run() {
+		this.requestFocus();
+		
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		double timer = System.currentTimeMillis();
-		int frames = 0;
+		// int frames = 0;
 
 		// The game loop
 		while (running) {
@@ -72,12 +85,12 @@ public class Game extends Canvas implements Runnable {
 			if (running)
 				render();
 
-			frames++;
+			// frames++;
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				// System.out.println("FPS: " + frames);
-				frames = 0;
+				// frames = 0;
 			}
 		}
 
@@ -86,6 +99,7 @@ public class Game extends Canvas implements Runnable {
 
 	private void tick() {
 		handler.tick();
+		hud.tick();
 	}
 
 	private void render() {
@@ -99,13 +113,23 @@ public class Game extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+
 		handler.render(g);
+		hud.render(g);
 
 		g.dispose();
 		bs.show();
 	}
 
+	public static int clamp(int var, int min, int max) {
+		if (var >= max) {
+			var = max;
+		} else if (var <= min) {
+			var = min;
+		}
+		
+		return var;
+	}
 	public static void main(String[] args) {
 		new Game();
 	}

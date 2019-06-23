@@ -18,18 +18,18 @@ public class KeyInput extends KeyAdapter {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 
+		// Super
+		if (key == KeyEvent.VK_ESCAPE)
+			System.exit(1);
+
 		for (GameObject o : handler.getObjects()) {
 			// Player 1
 			if (o.getId() == ID.Player_1) {
-				if (key == KeyEvent.VK_W) { // UP
-					o.setVelY(-3);
-				} else if (key == KeyEvent.VK_S) { // Down
-					o.setVelY(3);
-				} else if (key == KeyEvent.VK_A) { // 
-					o.setVelX(-3);
-				} else if (key == KeyEvent.VK_D) {
-					o.setVelX(3);
-				} else if (key == KeyEvent.VK_SPACE) {
+				if (key == KeyEvent.VK_W) o.setVelY(-3);
+				else if (key == KeyEvent.VK_S) o.setVelY(3);
+				else if (key == KeyEvent.VK_A) o.setVelX(-3);
+				else if (key == KeyEvent.VK_D) o.setVelX(3);
+				else if (key == KeyEvent.VK_SPACE) {
 					o.setVelX(0);
 					o.setVelY(0);
 				}
