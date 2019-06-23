@@ -32,15 +32,18 @@ public class Game extends Canvas implements Runnable {
 
 	public Game() {
 		handler = new Handler();
-		handler.addObject(new Player(WIDTH / 2 - 32, HEIGHT / 2 - 32, ID.Player_1));
+		handler.addObject(new Player(WIDTH / 2 - 32, HEIGHT / 2 - 32, ID.Player_1, handler));
 
-		hud = new HUD();
-		
-		Random rnd = new Random();
-		for (int i = 0; i < 10; i++) {
-			handler.addObject(new BasicEnemy(rnd.nextInt(WIDTH) + 1, rnd.nextInt(HEIGHT) + 1, ID.BasicEnemy));
+		Random rnd = new Random(2);
+		for (int i = 0; i < 5; i++) {
+			handler.addObject(new BasicEnemy(
+					Game.clamp(rnd.nextInt(WIDTH) + 1, 0, WIDTH - 50), 
+					Game.clamp(rnd.nextInt(HEIGHT) + 1, 0, HEIGHT - 50),
+					ID.BasicEnemy));
 		}
 
+		hud = new HUD(); // Health bar
+		
 		this.addKeyListener(new KeyInput(handler));
 		new Window(WIDTH, HEIGHT, "First game", this);
 	}

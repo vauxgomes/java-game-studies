@@ -1,6 +1,7 @@
 package com.game.main;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import com.game.core.ID;
 
@@ -28,6 +29,8 @@ public abstract class GameObject {
 	public abstract void tick();
 
 	public abstract void render(Graphics g);
+	
+	public abstract Rectangle getBounds();
 
 	/* Gets & Sets */
 	
