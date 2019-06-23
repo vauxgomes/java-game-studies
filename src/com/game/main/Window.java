@@ -2,7 +2,6 @@ package com.game.main;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
-import java.awt.Frame;
 
 import javax.swing.JFrame;
 

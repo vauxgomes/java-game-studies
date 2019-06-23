@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import com.game.core.ID;
+import com.game.core.Player;
+import com.game.mechanics.KeyInput;
+
 public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = -6680875776510531796L;
@@ -14,6 +18,8 @@ public class Game extends Canvas implements Runnable {
 
 	private Thread thread;
 	private boolean running = false;
+	
+	private Handler handler;
 
 	static {
 		WIDTH = 640;
@@ -21,6 +27,10 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public Game() {
+		handler = new Handler();		
+		handler.addObject(new Player(100,  100,  ID.Player_1));
+		
+		this.addKeyListener(new KeyInput(handler));
 		new Window(WIDTH, HEIGHT, "First game", this);
 	}
 
@@ -66,7 +76,7 @@ public class Game extends Canvas implements Runnable {
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println("FPS: " + frames);
+				// System.out.println("FPS: " + frames);
 				frames = 0;
 			}
 		}
@@ -75,7 +85,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void tick() {
-
+		handler.tick();
 	}
 
 	private void render() {
@@ -89,6 +99,8 @@ public class Game extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
+		handler.render(g);
 
 		g.dispose();
 		bs.show();
