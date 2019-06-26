@@ -3,8 +3,15 @@ package com.game.main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 import com.game.core.BasicEnemy;
 import com.game.core.HUD;
@@ -24,18 +31,20 @@ public class Game extends Canvas implements Runnable {
 
 	private Handler handler;
 	private HUD hud;
+	
+	private BufferedImage bg;
 
 	static {
 		WIDTH = 640;
 		HEIGHT = (WIDTH / 12) * 9;
 	}
 
-	public Game() {
+	public Game() throws IOException {
 		handler = new Handler();
 		handler.addObject(new Player(WIDTH / 2 - 32, HEIGHT / 2 - 32, ID.Player_1, handler));
 
 		Random rnd = new Random(2);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			handler.addObject(new BasicEnemy(
 					Game.clamp(rnd.nextInt(WIDTH) + 1, 0, WIDTH - 50), 
 					Game.clamp(rnd.nextInt(HEIGHT) + 1, 0, HEIGHT - 50),
@@ -44,7 +53,9 @@ public class Game extends Canvas implements Runnable {
 
 		hud = new HUD(); // Health bar
 		
+		this.bg = ImageIO.read(new File("res/background-black.png"));
 		this.addKeyListener(new KeyInput(handler));
+		
 		new Window(WIDTH, HEIGHT, "First game", this);
 	}
 
@@ -114,9 +125,10 @@ public class Game extends Canvas implements Runnable {
 		}
 
 		Graphics g = bs.getDrawGraphics();
-		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-
+		
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.drawImage(bg, 0, 0, WIDTH, HEIGHT, null);
+		
 		handler.render(g);
 		hud.render(g);
 
@@ -133,7 +145,7 @@ public class Game extends Canvas implements Runnable {
 		
 		return var;
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new Game();
 	}
 
